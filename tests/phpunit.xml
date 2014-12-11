@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap.php">
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../src/Farmaprom/Coordinates</directory>
+        </whitelist>
+    </filter>
+    <testsuites>
+        <testsuite name="Coordinates">
+            <directory>Farmaprom/Coordinates</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

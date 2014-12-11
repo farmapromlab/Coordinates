@@ -1,0 +1,23 @@
+{
+  "authors": [
+    {
+      "name": "Dawid Sajdak",
+      "email": "dawid.sajdak@farmaprom.pl"
+    }
+  ],
+  "license" : "MIT",
+  "require": {
+    "php": ">=5.4",
+    "doctrine/cache": "1.4.*@dev",
+    "guzzle/guzzle": "3.9.*@dev"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.0"
+  },
+  "config": {
+    "bin-dir": "bin"
+  },
+  "autoload": {
+    "psr-0": { "Farmaprom\\Coordinates": "src/" }
+  }
+}
