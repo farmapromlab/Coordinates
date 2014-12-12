@@ -2,8 +2,8 @@
 
 namespace Farmaprom\Coordinates\Tests\Coordinates;
 
+use Doctrine\Common\Cache\ArrayCache;
 use Farmaprom\Coordinates\Coordinates\GoogleMapCoordinates;
-use Farmaprom\Coordinates\Tests\Stub\Client;
 use Farmaprom\Coordinates\VO\Geography\Address;
 use Farmaprom\Coordinates\VO\Geography\Country;
 use Farmaprom\Coordinates\VO\Geography\CountryCode;
@@ -16,121 +16,64 @@ use Farmaprom\Coordinates\VO\String\String;
  */
 class GoogleMapCoordinatesTest extends \PHPUnit_Framework_TestCase
 {
+    const VALID_ADDRESS_LAT = 50.062708;
+    const VALID_ADDrESS_LONG = 19.9398689;
+    /**
+     * @var Address
+     */
+    private $validAddress;
+
+    /**
+     * @var string
+     */
+    private $validAddresClientResponse;
+
+    public function setUp()
+    {
+        $street = new Street(new String("Floriańska"), new String("15"));
+        $country = new Country(new String(CountryCode::PL));
+        $this->validAddress = new Address($street, new String("Krakow"), $country);
+
+        $this->validAddresClientResponse = file_get_contents(__DIR__ . '/../Fixtures/valid_google_coordinates.json');
+    }
+
     public function testGetCoordinateWhenLinkExistsInCache()
     {
-        $address = $this->getAddress();
+        $cache = new ArrayCache();
+        $cache->save("32257f1078ea68a422b5827025f3c166",json_decode($this->validAddresClientResponse));
+        $googleMapCoordinate = new GoogleMapCoordinates(
+            $this->validAddress,
+            $cache,
+            $this->getMock("Guzzle\\Http\\ClientInterface")
+        );
 
-        /** @var Cache|\PHPUnit_Framework_MockObject_MockObject $cacheProvider */
-        $cacheProvider = $this->getMockBuilder("Farmaprom\\Coordinates\\Tests\\Stub\\Cache")
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $cacheProvider->expects($this->once())
-            ->method("contains")
-            ->will($this->returnValue(true));
-
-        $object = $this->getResultObject();
-
-        $cacheProvider->expects($this->once())
-            ->method("fetch")
-            ->will($this->returnValue($object));
-
-        $googleMapCoordinate = new GoogleMapCoordinates($address, $cacheProvider, new Client());
-
-        $coordinate = $googleMapCoordinate->getCoordinate();
-
-        $this->assertSame(10.20, $coordinate->getLatitude()->toNative());
-        $this->assertSame(30.40, $coordinate->getLongtitude()->toNative());
+        $this->assertSame(self::VALID_ADDRESS_LAT, $googleMapCoordinate->getCoordinate()->getLatitude()->toNative());
+        $this->assertSame(self::VALID_ADDrESS_LONG, $googleMapCoordinate->getCoordinate()->getLongtitude()->toNative());
     }
 
     public function testGetCoordinateWhenLinkNotExiststInCacheAndResponseIsSuccsessful()
     {
-        $address = $this->getAddress();
-
-        /** @var Cache|\PHPUnit_Framework_MockObject_MockObject $cacheProvider */
-        $cacheProvider = $this->getMockBuilder("Farmaprom\\Coordinates\\Tests\\Stub\\Cache")
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $cacheProvider->expects($this->once())
-            ->method("contains")
-            ->will($this->returnValue(false));
-
-        $object = $this->getResultObject();
-
-        /** @var Client|\PHPUnit_Framework_MockObject_MockObject $client */
-        $client = $this->getMockBuilder("Farmaprom\\Coordinates\\Tests\\Stub\\Client")
-            ->disableOriginalConstructor()
-            ->getMock();
+        $client = $this->getMock("Guzzle\\Http\\ClientInterface");
 
         $client->expects($this->once())
             ->method("get")
-            ->will($this->returnValue(json_encode($object)));
+            ->will($this->returnValue($this->validAddresClientResponse));
 
-        $googleMapCoordinate = new GoogleMapCoordinates($address, $cacheProvider, $client);
+        $googleMapCoordinate = new GoogleMapCoordinates($this->validAddress, new ArrayCache(), $client);
 
-        $coordinate = $googleMapCoordinate->getCoordinate();
-
-        $this->assertSame(10.20, $coordinate->getLatitude()->toNative());
-        $this->assertSame(30.40, $coordinate->getLongtitude()->toNative());
+        $this->assertSame(self::VALID_ADDRESS_LAT, $googleMapCoordinate->getCoordinate()->getLatitude()->toNative());
+        $this->assertSame(self::VALID_ADDrESS_LONG, $googleMapCoordinate->getCoordinate()->getLongtitude()->toNative());
     }
 
     public function testGetCoordinateWhenLinkNotExiststInCacheAndResponseIsUnsuccsessful()
     {
-        $address = $this->getAddress();
-
-        /** @var Cache|\PHPUnit_Framework_MockObject_MockObject $cacheProvider */
-        $cacheProvider = $this->getMockBuilder("Farmaprom\\Coordinates\\Tests\\Stub\\Cache")
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $cacheProvider->expects($this->once())
-            ->method("contains")
-            ->will($this->returnValue(false));
-
-        $object = null;
-
-        /** @var Client|\PHPUnit_Framework_MockObject_MockObject $client */
-        $client = $this->getMockBuilder("Farmaprom\\Coordinates\\Tests\\Stub\\Client")
-            ->disableOriginalConstructor()
-            ->getMock();
-
+        $client = $this->getMock("Guzzle\\Http\\ClientInterface");
         $client->expects($this->once())
             ->method("get")
-            ->will($this->returnValue(json_encode($object)));
+            ->will($this->returnValue(json_encode(null)));
 
-        $googleMapCoordinate = new GoogleMapCoordinates($address, $cacheProvider, $client);
+        $googleMapCoordinate = new GoogleMapCoordinates($this->validAddress, new ArrayCache(), $client);
 
         $this->assertNull($googleMapCoordinate->getCoordinate());
-    }
-
-    /**
-     * @return Address
-     */
-    private function getAddress()
-    {
-        $street = new Street(new String("Test"), new String("22/12"));
-        $country = new Country(new String(CountryCode::PL));
-        $address = new Address($street, new String("Krakow"), $country);
-        return $address;
-    }
-
-    /**
-     * @return \stdClass
-     */
-    private function getResultObject()
-    {
-        $results = new \stdClass();
-        $results->geometry = new \stdClass();
-        $results->geometry->location = new \stdClass();
-        $results->geometry->location->lat = 10.20;
-        $results->geometry->location->lng = 30.40;
-
-        $object = new \stdClass();
-        $object->status = "OK";
-        $object->results = [
-            0 => $results
-        ];
-        return $object;
     }
 }

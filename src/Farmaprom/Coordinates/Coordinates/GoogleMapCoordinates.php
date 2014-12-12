@@ -26,7 +26,7 @@ final class GoogleMapCoordinates implements Coordinates
     /**
      * @var Cache
      */
-    private $cacheProvider;
+    private $cache;
 
     /**
      * @var ClientInterface
@@ -35,13 +35,13 @@ final class GoogleMapCoordinates implements Coordinates
 
     /**
      * @param Address $address
-     * @param Cache $cacheProvider
+     * @param Cache $cache
      * @param ClientInterface $client
      */
-    public function __construct(Address $address, Cache $cacheProvider, ClientInterface $client)
+    public function __construct(Address $address, Cache $cache, ClientInterface $client)
     {
         $this->address = $address;
-        $this->cacheProvider = $cacheProvider;
+        $this->cache = $cache;
         $this->client = $client;
     }
 
@@ -55,25 +55,35 @@ final class GoogleMapCoordinates implements Coordinates
         $link .= ",";
         $link .= str_replace(" ", "+", $this->address->getCity());
 
-        if ($this->cacheProvider->contains($link)) {
-            $address = $this->cacheProvider->fetch($link);
+        $cacheKey = $this->generateCacheIndex($link);
+        if ($this->cache->contains($cacheKey)) {
+            $addressJsonObject = $this->cache->fetch($cacheKey);
         } else {
-            $address = $this->client->get($link);
-            $address = json_decode($address);
+            $addressString = $this->client->get($link);
+            $addressJsonObject = json_decode($addressString);
 
-            if (is_object($address) && $address->status === "OK") {
-                $this->cacheProvider->save($link, $address);
+            if (is_object($addressJsonObject) && $addressJsonObject->status === "OK") {
+                $this->cache->save($cacheKey, $addressJsonObject);
             }
         }
 
-        if (is_object($address) && $address->status === "OK") {
+        if (is_object($addressJsonObject) && $addressJsonObject->status === "OK") {
             $coordinate = new Coordinate(
-                new Latitude($address->results[0]->geometry->location->lat),
-                new Longtitude($address->results[0]->geometry->location->lng)
+                new Latitude($addressJsonObject->results[0]->geometry->location->lat),
+                new Longtitude($addressJsonObject->results[0]->geometry->location->lng)
             );
             return $coordinate;
         }
 
         return null;
+    }
+
+    /**
+     * @param $link
+     * @return string
+     */
+    private function generateCacheIndex($link)
+    {
+        return md5($link);
     }
 }
