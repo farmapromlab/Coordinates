@@ -18,6 +18,9 @@
     "bin-dir": "bin"
   },
   "autoload": {
-    "psr-0": { "Farmaprom\\Coordinates": "src/" }
+    "psr-0": {
+      "Farmaprom\\Coordinates": "src/",
+      "Farmaprom\\Coordinates\\Tests": "tests/"
+    }
   }
 }

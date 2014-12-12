@@ -1,6 +1,6 @@
 <?php
 
-namespace Farmaprom\Coordinates\Stub;
+namespace Farmaprom\Coordinates\Tests\Stub;
 
 use Guzzle\Http\ClientInterface;
 use Guzzle\Http\Message\RequestInterface;

@@ -4,7 +4,7 @@ namespace Farmaprom\Coordinates\Tests\Factory;
 
 use Farmaprom\Coordinates\Coordinates;
 use Farmaprom\Coordinates\Factory\CoordinatesFactory;
-use Farmaprom\Coordinates\Stub\Cache;
+use Farmaprom\Coordinates\Tests\Stub\Cache;
 use Farmaprom\Coordinates\VO\Geography\Address;
 use Farmaprom\Coordinates\VO\Geography\Street;
 use Farmaprom\Coordinates\VO\String\String;
