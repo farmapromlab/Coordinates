@@ -2,9 +2,9 @@
 
 namespace Farmaprom\Coordinates\Tests\Factory;
 
+use Doctrine\Common\Cache\ArrayCache;
 use Farmaprom\Coordinates\Coordinates;
 use Farmaprom\Coordinates\Factory\CoordinatesFactory;
-use Farmaprom\Coordinates\Tests\Stub\Cache;
 use Farmaprom\Coordinates\VO\Geography\Address;
 use Farmaprom\Coordinates\VO\Geography\Street;
 use Farmaprom\Coordinates\VO\String\String;
@@ -24,7 +24,7 @@ class CoordinatesFactoryTest extends \PHPUnit_Framework_TestCase
 
         $address = new Address($street, new String("Krakow"), $country);
 
-        $coordinateCreator = new CoordinatesFactory($address, new Cache());
+        $coordinateCreator = new CoordinatesFactory($address, new ArrayCache());
 
         $this->assertInstanceOf("Farmaprom\\Coordinates\\Factory", $coordinateCreator);
     }
@@ -36,7 +36,7 @@ class CoordinatesFactoryTest extends \PHPUnit_Framework_TestCase
 
         $address = new Address($street, new String("Krakow"), $country);
 
-        $coordinateCreator = new CoordinatesFactory($address, new Cache());
+        $coordinateCreator = new CoordinatesFactory($address, new ArrayCache());
 
         $create = $coordinateCreator->createCoordinates(new String(Coordinates::OPEN_STREET_MAP));
         $this->assertInstanceOf("Farmaprom\\Coordinates\\Coordinates\\OpenStreetMapCoordinates", $create);

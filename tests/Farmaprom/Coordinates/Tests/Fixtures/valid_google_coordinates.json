@@ -1,0 +1,73 @@
+{
+  "results" : [
+    {
+      "address_components" : [
+        {
+          "long_name" : "15",
+          "short_name" : "15",
+          "types" : [ "street_number" ]
+        },
+        {
+          "long_name" : "Floriańska",
+          "short_name" : "Floriańska",
+          "types" : [ "route" ]
+        },
+        {
+          "long_name" : "Stare Miasto",
+          "short_name" : "Stare Miasto",
+          "types" : [ "sublocality_level_1", "sublocality", "political" ]
+        },
+        {
+          "long_name" : "Kraków",
+          "short_name" : "Kraków",
+          "types" : [ "locality", "political" ]
+        },
+        {
+          "long_name" : "Kraków",
+          "short_name" : "Kraków",
+          "types" : [ "administrative_area_level_3", "political" ]
+        },
+        {
+          "long_name" : "Kraków",
+          "short_name" : "Kraków",
+          "types" : [ "administrative_area_level_2", "political" ]
+        },
+        {
+          "long_name" : "Województwo małopolskie",
+          "short_name" : "Województwo małopolskie",
+          "types" : [ "administrative_area_level_1", "political" ]
+        },
+        {
+          "long_name" : "Polska",
+          "short_name" : "PL",
+          "types" : [ "country", "political" ]
+        },
+        {
+          "long_name" : "33-332",
+          "short_name" : "33-332",
+          "types" : [ "postal_code" ]
+        }
+      ],
+      "formatted_address" : "Floriańska 15, 33-332 Kraków, Polska",
+      "geometry" : {
+        "location" : {
+          "lat" : 50.062708,
+          "lng" : 19.9398689
+        },
+        "location_type" : "ROOFTOP",
+        "viewport" : {
+          "northeast" : {
+            "lat" : 50.0640569802915,
+            "lng" : 19.9412178802915
+          },
+          "southwest" : {
+            "lat" : 50.0613590197085,
+            "lng" : 19.9385199197085
+          }
+        }
+      },
+      "types" : [ "street_address" ]
+    }
+  ],
+  "status" : "OK"
+}
