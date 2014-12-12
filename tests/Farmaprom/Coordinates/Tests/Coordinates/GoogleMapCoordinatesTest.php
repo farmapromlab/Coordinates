@@ -3,8 +3,7 @@
 namespace Farmaprom\Coordinates\Tests\Coordinates;
 
 use Farmaprom\Coordinates\Coordinates\GoogleMapCoordinates;
-use Farmaprom\Coordinates\Stub\Cache;
-use Farmaprom\Coordinates\Stub\Client;
+use Farmaprom\Coordinates\Tests\Stub\Client;
 use Farmaprom\Coordinates\VO\Geography\Address;
 use Farmaprom\Coordinates\VO\Geography\Country;
 use Farmaprom\Coordinates\VO\Geography\CountryCode;
@@ -22,7 +21,7 @@ class GoogleMapCoordinatesTest extends \PHPUnit_Framework_TestCase
         $address = $this->getAddress();
 
         /** @var Cache|\PHPUnit_Framework_MockObject_MockObject $cacheProvider */
-        $cacheProvider = $this->getMockBuilder("Farmaprom\\Coordinates\\Stub\\Cache")
+        $cacheProvider = $this->getMockBuilder("Farmaprom\\Coordinates\\Tests\\Stub\\Cache")
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -49,7 +48,7 @@ class GoogleMapCoordinatesTest extends \PHPUnit_Framework_TestCase
         $address = $this->getAddress();
 
         /** @var Cache|\PHPUnit_Framework_MockObject_MockObject $cacheProvider */
-        $cacheProvider = $this->getMockBuilder("Farmaprom\\Coordinates\\Stub\\Cache")
+        $cacheProvider = $this->getMockBuilder("Farmaprom\\Coordinates\\Tests\\Stub\\Cache")
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -60,7 +59,7 @@ class GoogleMapCoordinatesTest extends \PHPUnit_Framework_TestCase
         $object = $this->getResultObject();
 
         /** @var Client|\PHPUnit_Framework_MockObject_MockObject $client */
-        $client = $this->getMockBuilder("Farmaprom\\Coordinates\\Stub\\Client")
+        $client = $this->getMockBuilder("Farmaprom\\Coordinates\\Tests\\Stub\\Client")
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -81,7 +80,7 @@ class GoogleMapCoordinatesTest extends \PHPUnit_Framework_TestCase
         $address = $this->getAddress();
 
         /** @var Cache|\PHPUnit_Framework_MockObject_MockObject $cacheProvider */
-        $cacheProvider = $this->getMockBuilder("Farmaprom\\Coordinates\\Stub\\Cache")
+        $cacheProvider = $this->getMockBuilder("Farmaprom\\Coordinates\\Tests\\Stub\\Cache")
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -92,7 +91,7 @@ class GoogleMapCoordinatesTest extends \PHPUnit_Framework_TestCase
         $object = null;
 
         /** @var Client|\PHPUnit_Framework_MockObject_MockObject $client */
-        $client = $this->getMockBuilder("Farmaprom\\Coordinates\\Stub\\Client")
+        $client = $this->getMockBuilder("Farmaprom\\Coordinates\\Tests\\Stub\\Client")
             ->disableOriginalConstructor()
             ->getMock();
 
