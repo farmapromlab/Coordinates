@@ -4,7 +4,7 @@ namespace Farmaprom\Coordinates\Tests\VO\Geography;
 
 use Farmaprom\Coordinates\VO\Geography\Coordinate;
 use Farmaprom\Coordinates\VO\Geography\Latitude;
-use Farmaprom\Coordinates\VO\Geography\Longtitude;
+use Farmaprom\Coordinates\VO\Geography\Longitude;
 
 /**
  * Class CoordinateTest
@@ -12,6 +12,9 @@ use Farmaprom\Coordinates\VO\Geography\Longtitude;
  */
 class CoordinateTest extends \PHPUnit_Framework_TestCase
 {
+    const VALID_ADDRESS_LAT = 50.062708;
+    const VALID_ADDRESS_LONG = 19.9398689;
+
     /**
      * @var Coordinate
      */
@@ -19,19 +22,19 @@ class CoordinateTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $latitude = new Latitude(12.456);
-        $longtitude = new Longtitude(98.765);
+        $latitude = new Latitude(self::VALID_ADDRESS_LAT);
+        $longitude = new Longitude(self::VALID_ADDRESS_LONG);
 
-        $this->coordinate = new Coordinate($latitude, $longtitude);
+        $this->coordinate = new Coordinate($latitude, $longitude);
     }
 
     public function testGetLatitude()
     {
-        $this->assertSame(12.456, $this->coordinate->getLatitude()->toNative());
+        $this->assertSame(self::VALID_ADDRESS_LAT, $this->coordinate->getLatitude()->toNative());
     }
 
-    public function testGetLongtitude()
+    public function testGetLongitude()
     {
-        $this->assertSame(98.765, $this->coordinate->getLongtitude()->toNative());
+        $this->assertSame(self::VALID_ADDRESS_LONG, $this->coordinate->getLongitude()->toNative());
     }
 }

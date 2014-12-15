@@ -10,8 +10,8 @@ use Farmaprom\Coordinates\VO\Geography\Coordinate;
  */
 interface Coordinates
 {
-    const GOOGLE_MAP = "google_map";
-    const OPEN_STREET_MAP = "open_street_map";
+    const GOOGLE_MAP = 1;
+    const OPEN_STREET_MAP = 2;
 
     /**
      * @return Coordinate

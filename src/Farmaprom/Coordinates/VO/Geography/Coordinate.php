@@ -14,18 +14,18 @@ final class Coordinate
     private $latitude;
 
     /**
-     * @var Longtitude
+     * @var Longitude
      */
-    private $longtitude;
+    private $longitude;
 
     /**
      * @param Latitude $latitude
-     * @param Longtitude $longtitude
+     * @param Longitude $longitude
      */
-    public function __construct(Latitude $latitude, Longtitude $longtitude)
+    public function __construct(Latitude $latitude, Longitude $longitude)
     {
         $this->latitude = $latitude;
-        $this->longtitude = $longtitude;
+        $this->longitude = $longitude;
     }
 
     /**
@@ -37,10 +37,10 @@ final class Coordinate
     }
 
     /**
-     * @return Longtitude
+     * @return Longitude
      */
-    public function getLongtitude()
+    public function getLongitude()
     {
-        return $this->longtitude;
+        return $this->longitude;
     }
 }

@@ -3,6 +3,7 @@
 namespace Farmaprom\Coordinates\Tests\Factory;
 
 use Doctrine\Common\Cache\ArrayCache;
+use Farmaprom\Coordinates\Builder\GoogleMapUrlBuilder;
 use Farmaprom\Coordinates\Coordinates;
 use Farmaprom\Coordinates\Factory\CoordinatesFactory;
 use Farmaprom\Coordinates\VO\Geography\Address;
@@ -24,27 +25,37 @@ class CoordinatesFactoryTest extends \PHPUnit_Framework_TestCase
 
         $address = new Address($street, new String("Krakow"), $country);
 
-        $coordinateCreator = new CoordinatesFactory($address, new ArrayCache());
+        $coordinateCreator = new CoordinatesFactory(
+            $address,
+            new ArrayCache(),
+            $this->getMock("Guzzle\\Http\\ClientInterface"),
+            new String(GoogleMapUrlBuilder::GOOGLE_MAP_API)
+        );
 
         $this->assertInstanceOf("Farmaprom\\Coordinates\\Factory", $coordinateCreator);
     }
 
-    public function testCreate()
+    public function testCreateCoordinates()
     {
         $street = new Street(new String("Test"), new String("22/12"));
         $country = new Country(new String(CountryCode::PL));
 
         $address = new Address($street, new String("Krakow"), $country);
 
-        $coordinateCreator = new CoordinatesFactory($address, new ArrayCache());
+        $coordinateCreator = new CoordinatesFactory(
+            $address,
+            new ArrayCache(),
+            $this->getMock("Guzzle\\Http\\ClientInterface"),
+            new String(GoogleMapUrlBuilder::GOOGLE_MAP_API)
+        );
 
-        $create = $coordinateCreator->createCoordinates(new String(Coordinates::OPEN_STREET_MAP));
+        $create = $coordinateCreator->createCoordinates(Coordinates::OPEN_STREET_MAP);
         $this->assertInstanceOf("Farmaprom\\Coordinates\\Coordinates\\OpenStreetMapCoordinates", $create);
 
-        $create = $coordinateCreator->createCoordinates(new String(Coordinates::GOOGLE_MAP));
+        $create = $coordinateCreator->createCoordinates(Coordinates::GOOGLE_MAP);
         $this->assertInstanceOf("Farmaprom\\Coordinates\\Coordinates\\GoogleMapCoordinates", $create);
 
-        $create = $coordinateCreator->createCoordinates(new String("test"));
+        $create = $coordinateCreator->createCoordinates(12);
         $this->assertNull($create);
     }
 }

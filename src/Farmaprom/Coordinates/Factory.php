@@ -2,8 +2,6 @@
 
 namespace Farmaprom\Coordinates;
 
-use Farmaprom\Coordinates\VO\String\String;
-
 /**
  * Interface Factory
  * @package Farmaprom
@@ -11,8 +9,8 @@ use Farmaprom\Coordinates\VO\String\String;
 interface Factory
 {
     /**
-     * @param String $type
+     * @param int $type
      * @return mixed
      */
-    public function createCoordinates(String $type);
+    public function createCoordinates($type);
 }

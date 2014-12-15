@@ -5,10 +5,10 @@ namespace Farmaprom\Coordinates\VO\Geography;
 use Farmaprom\Coordinates\Vo\Number\Real;
 
 /**
- * Class Longtitude
+ * Class Longitude
  * @package Farmaprom\Coordinates\VO\Geography
  */
-final class Longtitude extends Real
+final class Longitude extends Real
 {
     /**
      * @param float $value

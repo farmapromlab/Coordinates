@@ -3,6 +3,7 @@
 namespace Farmaprom\Coordinates\Tests\Coordinates;
 
 use Doctrine\Common\Cache\ArrayCache;
+use Farmaprom\Coordinates\Builder\GoogleMapUrlBuilder;
 use Farmaprom\Coordinates\Coordinates\GoogleMapCoordinates;
 use Farmaprom\Coordinates\VO\Geography\Address;
 use Farmaprom\Coordinates\VO\Geography\Country;
@@ -17,7 +18,8 @@ use Farmaprom\Coordinates\VO\String\String;
 class GoogleMapCoordinatesTest extends \PHPUnit_Framework_TestCase
 {
     const VALID_ADDRESS_LAT = 50.062708;
-    const VALID_ADDrESS_LONG = 19.9398689;
+    const VALID_ADDRESS_LONG = 19.9398689;
+
     /**
      * @var Address
      */
@@ -40,15 +42,16 @@ class GoogleMapCoordinatesTest extends \PHPUnit_Framework_TestCase
     public function testGetCoordinateWhenLinkExistsInCache()
     {
         $cache = new ArrayCache();
-        $cache->save("32257f1078ea68a422b5827025f3c166",json_decode($this->validAddresClientResponse));
+        $cache->save("32257f1078ea68a422b5827025f3c166", json_decode($this->validAddresClientResponse));
         $googleMapCoordinate = new GoogleMapCoordinates(
             $this->validAddress,
             $cache,
-            $this->getMock("Guzzle\\Http\\ClientInterface")
+            $this->getMock("Guzzle\\Http\\ClientInterface"),
+            new String(GoogleMapUrlBuilder::GOOGLE_MAP_API)
         );
 
         $this->assertSame(self::VALID_ADDRESS_LAT, $googleMapCoordinate->getCoordinate()->getLatitude()->toNative());
-        $this->assertSame(self::VALID_ADDrESS_LONG, $googleMapCoordinate->getCoordinate()->getLongtitude()->toNative());
+        $this->assertSame(self::VALID_ADDRESS_LONG, $googleMapCoordinate->getCoordinate()->getLongitude()->toNative());
     }
 
     public function testGetCoordinateWhenLinkNotExiststInCacheAndResponseIsSuccsessful()
@@ -59,10 +62,15 @@ class GoogleMapCoordinatesTest extends \PHPUnit_Framework_TestCase
             ->method("get")
             ->will($this->returnValue($this->validAddresClientResponse));
 
-        $googleMapCoordinate = new GoogleMapCoordinates($this->validAddress, new ArrayCache(), $client);
+        $googleMapCoordinate = new GoogleMapCoordinates(
+            $this->validAddress,
+            new ArrayCache(),
+            $client,
+            new String(GoogleMapUrlBuilder::GOOGLE_MAP_API)
+        );
 
         $this->assertSame(self::VALID_ADDRESS_LAT, $googleMapCoordinate->getCoordinate()->getLatitude()->toNative());
-        $this->assertSame(self::VALID_ADDrESS_LONG, $googleMapCoordinate->getCoordinate()->getLongtitude()->toNative());
+        $this->assertSame(self::VALID_ADDRESS_LONG, $googleMapCoordinate->getCoordinate()->getLongitude()->toNative());
     }
 
     public function testGetCoordinateWhenLinkNotExiststInCacheAndResponseIsUnsuccsessful()
@@ -72,7 +80,12 @@ class GoogleMapCoordinatesTest extends \PHPUnit_Framework_TestCase
             ->method("get")
             ->will($this->returnValue(json_encode(null)));
 
-        $googleMapCoordinate = new GoogleMapCoordinates($this->validAddress, new ArrayCache(), $client);
+        $googleMapCoordinate = new GoogleMapCoordinates(
+            $this->validAddress,
+            new ArrayCache(),
+            $client,
+            new String(GoogleMapUrlBuilder::GOOGLE_MAP_API)
+        );
 
         $this->assertNull($googleMapCoordinate->getCoordinate());
     }

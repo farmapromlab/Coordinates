@@ -3,11 +3,13 @@
 namespace Farmaprom\Coordinates\Coordinates;
 
 use Doctrine\Common\Cache\Cache;
+use Farmaprom\Coordinates\Builder\GoogleMapUrlBuilder;
 use Farmaprom\Coordinates\Coordinates;
 use Farmaprom\Coordinates\VO\Geography\Address;
 use Farmaprom\Coordinates\VO\Geography\Coordinate;
 use Farmaprom\Coordinates\VO\Geography\Latitude;
-use Farmaprom\Coordinates\VO\Geography\Longtitude;
+use Farmaprom\Coordinates\VO\Geography\Longitude;
+use Farmaprom\Coordinates\VO\String\String;
 use Guzzle\Http\ClientInterface;
 
 /**
@@ -16,8 +18,6 @@ use Guzzle\Http\ClientInterface;
  */
 final class GoogleMapCoordinates implements Coordinates
 {
-    const GOOGLE_MAP_API = "https://maps.googleapis.com/maps/api/geocode/json?address=";
-
     /**
      * @var Address
      */
@@ -34,15 +34,22 @@ final class GoogleMapCoordinates implements Coordinates
     private $client;
 
     /**
+     * @var String
+     */
+    private $url;
+
+    /**
      * @param Address $address
      * @param Cache $cache
      * @param ClientInterface $client
+     * @param String $url
      */
-    public function __construct(Address $address, Cache $cache, ClientInterface $client)
+    public function __construct(Address $address, Cache $cache, ClientInterface $client, String $url)
     {
         $this->address = $address;
         $this->cache = $cache;
         $this->client = $client;
+        $this->url = $url;
     }
 
     /**
@@ -50,16 +57,14 @@ final class GoogleMapCoordinates implements Coordinates
      */
     public function getCoordinate()
     {
-        $link = self::GOOGLE_MAP_API;
-        $link .= str_replace(" ", "+", $this->address->getStreet()->getName() . " " . $this->address->getStreet()->getNumber());
-        $link .= ",";
-        $link .= str_replace(" ", "+", $this->address->getCity());
+        $urlBuilder = new GoogleMapUrlBuilder($this->url);
+        $url = $urlBuilder->buildUrl($this->address);
 
-        $cacheKey = $this->generateCacheIndex($link);
+        $cacheKey = $this->generateCacheIndex($url);
         if ($this->cache->contains($cacheKey)) {
             $addressJsonObject = $this->cache->fetch($cacheKey);
         } else {
-            $addressString = $this->client->get($link);
+            $addressString = $this->client->get($url);
             $addressJsonObject = json_decode($addressString);
 
             if (is_object($addressJsonObject) && $addressJsonObject->status === "OK") {
@@ -70,7 +75,7 @@ final class GoogleMapCoordinates implements Coordinates
         if (is_object($addressJsonObject) && $addressJsonObject->status === "OK") {
             $coordinate = new Coordinate(
                 new Latitude($addressJsonObject->results[0]->geometry->location->lat),
-                new Longtitude($addressJsonObject->results[0]->geometry->location->lng)
+                new Longitude($addressJsonObject->results[0]->geometry->location->lng)
             );
             return $coordinate;
         }
