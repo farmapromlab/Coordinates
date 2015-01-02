@@ -6,7 +6,7 @@ use Farmaprom\Coordinates\VO\Geography\Coordinate;
 
 /**
  * Interface Coordinates
- * @package Farmaprom
+ * @package Farmaprom\Coordinates
  */
 interface Coordinates
 {

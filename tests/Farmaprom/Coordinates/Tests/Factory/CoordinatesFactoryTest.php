@@ -2,7 +2,6 @@
 
 namespace Farmaprom\Coordinates\Tests\Factory;
 
-use Doctrine\Common\Cache\ArrayCache;
 use Farmaprom\Coordinates\Builder\GoogleMapUrlBuilder;
 use Farmaprom\Coordinates\Coordinates;
 use Farmaprom\Coordinates\Factory\CoordinatesFactory;
@@ -27,8 +26,8 @@ class CoordinatesFactoryTest extends \PHPUnit_Framework_TestCase
 
         $coordinateCreator = new CoordinatesFactory(
             $address,
-            new ArrayCache(),
-            $this->getMock("Guzzle\\Http\\ClientInterface"),
+            $this->getMock("Farmaprom\\Coordinates\\CacheProvider"),
+            $this->getMock("Farmaprom\\Coordinates\\ContentProvider"),
             new String(GoogleMapUrlBuilder::GOOGLE_MAP_API)
         );
 
@@ -44,8 +43,8 @@ class CoordinatesFactoryTest extends \PHPUnit_Framework_TestCase
 
         $coordinateCreator = new CoordinatesFactory(
             $address,
-            new ArrayCache(),
-            $this->getMock("Guzzle\\Http\\ClientInterface"),
+            $this->getMock("Farmaprom\\Coordinates\\CacheProvider"),
+            $this->getMock("Farmaprom\\Coordinates\\ContentProvider"),
             new String(GoogleMapUrlBuilder::GOOGLE_MAP_API)
         );
 

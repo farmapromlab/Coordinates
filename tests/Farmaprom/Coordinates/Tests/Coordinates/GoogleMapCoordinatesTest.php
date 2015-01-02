@@ -2,7 +2,6 @@
 
 namespace Farmaprom\Coordinates\Tests\Coordinates;
 
-use Doctrine\Common\Cache\ArrayCache;
 use Farmaprom\Coordinates\Builder\GoogleMapUrlBuilder;
 use Farmaprom\Coordinates\Coordinates\GoogleMapCoordinates;
 use Farmaprom\Coordinates\VO\Geography\Address;
@@ -41,50 +40,76 @@ class GoogleMapCoordinatesTest extends \PHPUnit_Framework_TestCase
 
     public function testGetCoordinateWhenLinkExistsInCache()
     {
-        $cache = new ArrayCache();
-        $cache->save("32257f1078ea68a422b5827025f3c166", json_decode($this->validAddresClientResponse));
+        $cache = $this->getMock("Farmaprom\\Coordinates\\CacheProvider");
+        $cache->expects($this->once())
+            ->method("contains")
+            ->will($this->returnValue(true));
+
+        $cache->expects($this->once())
+            ->method("fetch")
+            ->will($this->returnValue(json_decode($this->validAddresClientResponse)));
+
+        $urlBuilder = new GoogleMapUrlBuilder(new String(GoogleMapUrlBuilder::GOOGLE_MAP_API));
+
         $googleMapCoordinate = new GoogleMapCoordinates(
             $this->validAddress,
             $cache,
-            $this->getMock("Guzzle\\Http\\ClientInterface"),
-            new String(GoogleMapUrlBuilder::GOOGLE_MAP_API)
+            $this->getMock("Farmaprom\\Coordinates\\ContentProvider"),
+            $urlBuilder
         );
 
-        $this->assertSame(self::VALID_ADDRESS_LAT, $googleMapCoordinate->getCoordinate()->getLatitude()->toNative());
-        $this->assertSame(self::VALID_ADDRESS_LONG, $googleMapCoordinate->getCoordinate()->getLongitude()->toNative());
+        $coordinate = $googleMapCoordinate->getCoordinate();
+
+        $this->assertSame(self::VALID_ADDRESS_LAT, $coordinate->getLatitude()->toNative());
+        $this->assertSame(self::VALID_ADDRESS_LONG, $coordinate->getLongitude()->toNative());
     }
 
     public function testGetCoordinateWhenLinkNotExiststInCacheAndResponseIsSuccsessful()
     {
-        $client = $this->getMock("Guzzle\\Http\\ClientInterface");
+        $cache = $this->getMock("Farmaprom\\Coordinates\\CacheProvider");
+        $cache->expects($this->once())
+            ->method("contains")
+            ->will($this->returnValue(false));
 
+        $client = $this->getMock("Farmaprom\\Coordinates\\ContentProvider");
         $client->expects($this->once())
-            ->method("get")
+            ->method("fetch")
             ->will($this->returnValue($this->validAddresClientResponse));
+
+        $urlBuilder = new GoogleMapUrlBuilder(new String(GoogleMapUrlBuilder::GOOGLE_MAP_API));
 
         $googleMapCoordinate = new GoogleMapCoordinates(
             $this->validAddress,
-            new ArrayCache(),
+            $cache,
             $client,
-            new String(GoogleMapUrlBuilder::GOOGLE_MAP_API)
+            $urlBuilder
         );
 
-        $this->assertSame(self::VALID_ADDRESS_LAT, $googleMapCoordinate->getCoordinate()->getLatitude()->toNative());
-        $this->assertSame(self::VALID_ADDRESS_LONG, $googleMapCoordinate->getCoordinate()->getLongitude()->toNative());
+        $coordinate = $googleMapCoordinate->getCoordinate();
+
+        $this->assertSame(self::VALID_ADDRESS_LAT, $coordinate->getLatitude()->toNative());
+        $this->assertSame(self::VALID_ADDRESS_LONG, $coordinate->getLongitude()->toNative());
     }
 
     public function testGetCoordinateWhenLinkNotExiststInCacheAndResponseIsUnsuccsessful()
     {
-        $client = $this->getMock("Guzzle\\Http\\ClientInterface");
+        $cache = $this->getMock("Farmaprom\\Coordinates\\CacheProvider");
+        $cache->expects($this->any())
+            ->method("contains")
+            ->will($this->returnValue(false));
+
+        $client = $this->getMock("Farmaprom\\Coordinates\\ContentProvider");
         $client->expects($this->once())
-            ->method("get")
+            ->method("fetch")
             ->will($this->returnValue(json_encode(null)));
+
+        $urlBuilder = new GoogleMapUrlBuilder(new String(GoogleMapUrlBuilder::GOOGLE_MAP_API));
 
         $googleMapCoordinate = new GoogleMapCoordinates(
             $this->validAddress,
-            new ArrayCache(),
+            $cache,
             $client,
-            new String(GoogleMapUrlBuilder::GOOGLE_MAP_API)
+            $urlBuilder
         );
 
         $this->assertNull($googleMapCoordinate->getCoordinate());

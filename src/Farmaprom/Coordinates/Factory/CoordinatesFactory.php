@@ -2,14 +2,15 @@
 
 namespace Farmaprom\Coordinates\Factory;
 
-use Doctrine\Common\Cache\Cache;
+use Farmaprom\Coordinates\Builder\GoogleMapUrlBuilder;
+use Farmaprom\Coordinates\CacheProvider;
+use Farmaprom\Coordinates\ContentProvider;
 use Farmaprom\Coordinates\Coordinates;
 use Farmaprom\Coordinates\Coordinates\GoogleMapCoordinates;
 use Farmaprom\Coordinates\Coordinates\OpenStreetMapCoordinates;
 use Farmaprom\Coordinates\Factory;
 use Farmaprom\Coordinates\VO\Geography\Address;
 use Farmaprom\Coordinates\VO\String\String;
-use Guzzle\Http\ClientInterface;
 
 /**
  * Class CoordinatesFactory
@@ -23,14 +24,14 @@ final class CoordinatesFactory implements Factory
     private $address;
 
     /**
-     * @var Cache
+     * @var CacheProvider
      */
     private $cache;
 
     /**
-     * @var ClientInterface
+     * @var ContentProvider
      */
-    private $client;
+    private $contentProvider;
 
     /**
      * @var String
@@ -39,15 +40,15 @@ final class CoordinatesFactory implements Factory
 
     /**
      * @param Address $address
-     * @param Cache $cache
-     * @param ClientInterface $client
-     * @param String $url
+     * @param CacheProvider $cache
+     * @param ContentProvider $contentProvider
+     * @param String|String $url
      */
-    public function __construct(Address $address, Cache $cache, ClientInterface $client, String $url)
+    public function __construct(Address $address, CacheProvider $cache, ContentProvider $contentProvider, String $url)
     {
         $this->address  = $address;
         $this->cache    = $cache;
-        $this->client   = $client;
+        $this->contentProvider   = $contentProvider;
         $this->url      = $url;
     }
 
@@ -60,11 +61,14 @@ final class CoordinatesFactory implements Factory
     {
         switch($type) {
             case Coordinates::GOOGLE_MAP:
-                return new GoogleMapCoordinates($this->address, $this->cache, $this->client, $this->url);
+                $urlBuilder = new GoogleMapUrlBuilder($this->url);
+                return new GoogleMapCoordinates($this->address, $this->cache, $this->contentProvider, $urlBuilder);
                 break;
             case Coordinates::OPEN_STREET_MAP:
                 return new OpenStreetMapCoordinates($this->address, $this->cache);
                 break;
+            default:
+                return null;
         }
     }
 }

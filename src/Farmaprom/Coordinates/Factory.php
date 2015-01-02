@@ -4,7 +4,7 @@ namespace Farmaprom\Coordinates;
 
 /**
  * Interface Factory
- * @package Farmaprom
+ * @package Farmaprom\Coordinates
  */
 interface Factory
 {

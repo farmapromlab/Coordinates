@@ -2,15 +2,15 @@
 
 namespace Farmaprom\Coordinates\Coordinates;
 
-use Doctrine\Common\Cache\Cache;
 use Farmaprom\Coordinates\Builder\GoogleMapUrlBuilder;
+use Farmaprom\Coordinates\CacheProvider;
+use Farmaprom\Coordinates\ContentProvider;
 use Farmaprom\Coordinates\Coordinates;
 use Farmaprom\Coordinates\VO\Geography\Address;
 use Farmaprom\Coordinates\VO\Geography\Coordinate;
 use Farmaprom\Coordinates\VO\Geography\Latitude;
 use Farmaprom\Coordinates\VO\Geography\Longitude;
 use Farmaprom\Coordinates\VO\String\String;
-use Guzzle\Http\ClientInterface;
 
 /**
  * Class GoogleMapCoordinates
@@ -24,32 +24,36 @@ final class GoogleMapCoordinates implements Coordinates
     private $address;
 
     /**
-     * @var Cache
+     * @var CacheProvider
      */
     private $cache;
 
     /**
-     * @var ClientInterface
+     * @var ContentProvider
      */
-    private $client;
+    private $contentProvider;
 
     /**
-     * @var String
+     * @var GoogleMapUrlBuilder
      */
-    private $url;
+    private $urlBuilder;
 
     /**
      * @param Address $address
-     * @param Cache $cache
-     * @param ClientInterface $client
-     * @param String $url
+     * @param CacheProvider $cache
+     * @param ContentProvider $contentProvider
+     * @param GoogleMapUrlBuilder $urlBuilder
      */
-    public function __construct(Address $address, Cache $cache, ClientInterface $client, String $url)
-    {
+    public function __construct(
+        Address $address,
+        CacheProvider $cache,
+        ContentProvider $contentProvider,
+        GoogleMapUrlBuilder $urlBuilder
+    ) {
         $this->address = $address;
         $this->cache = $cache;
-        $this->client = $client;
-        $this->url = $url;
+        $this->contentProvider = $contentProvider;
+        $this->urlBuilder = $urlBuilder;
     }
 
     /**
@@ -57,14 +61,13 @@ final class GoogleMapCoordinates implements Coordinates
      */
     public function getCoordinate()
     {
-        $urlBuilder = new GoogleMapUrlBuilder($this->url);
-        $url = $urlBuilder->buildUrl($this->address);
+        $url = $this->urlBuilder->buildUrl($this->address);
 
         $cacheKey = $this->generateCacheIndex($url);
         if ($this->cache->contains($cacheKey)) {
             $addressJsonObject = $this->cache->fetch($cacheKey);
         } else {
-            $addressString = $this->client->get($url);
+            $addressString = $this->contentProvider->fetch(new String($url));
             $addressJsonObject = json_decode($addressString);
 
             if (is_object($addressJsonObject) && $addressJsonObject->status === "OK") {
