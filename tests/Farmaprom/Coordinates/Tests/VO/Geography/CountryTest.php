@@ -32,4 +32,9 @@ class CountryTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertSame(CountryCodeName::getName($this->country->getCode())->toNative(), $this->country->getName()->toNative());
     }
+
+    public function testToString()
+    {
+        $this->assertSame((string) $this->country, $this->country->getName()->toNative());
+    }
 }

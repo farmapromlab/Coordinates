@@ -23,4 +23,10 @@ class RealTest extends \PHPUnit_Framework_TestCase
     {
         new Real("test");
     }
+
+    public function testToString()
+    {
+        $real = new Real(12.34);
+        $this->assertSame((string) $real, "12.34");
+    }
 }

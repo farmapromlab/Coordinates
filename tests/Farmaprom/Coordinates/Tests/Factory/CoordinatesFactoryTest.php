@@ -48,9 +48,6 @@ class CoordinatesFactoryTest extends \PHPUnit_Framework_TestCase
             new String(GoogleMapUrlBuilder::GOOGLE_MAP_API)
         );
 
-        $create = $coordinateCreator->createCoordinates(Coordinates::OPEN_STREET_MAP);
-        $this->assertInstanceOf("Farmaprom\\Coordinates\\Coordinates\\OpenStreetMapCoordinates", $create);
-
         $create = $coordinateCreator->createCoordinates(Coordinates::GOOGLE_MAP);
         $this->assertInstanceOf("Farmaprom\\Coordinates\\Coordinates\\GoogleMapCoordinates", $create);
 

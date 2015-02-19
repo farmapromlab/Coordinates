@@ -39,6 +39,6 @@ class Real
      */
     public function __toString()
     {
-        return \strval($this->toNative());
+        return strval($this->toNative());
     }
 }

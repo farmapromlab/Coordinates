@@ -37,4 +37,14 @@ class CoordinateTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertSame(self::VALID_ADDRESS_LONG, $this->coordinate->getLongitude()->toNative());
     }
+
+    public function testGetDistance()
+    {
+        $latitude = new Latitude(10);
+        $longitude = new Longitude(20);
+
+        $coordinate = new Coordinate($latitude, $longitude);
+
+        $this->assertSame(3868.5, $this->coordinate->distanceFrom($coordinate));
+    }
 }

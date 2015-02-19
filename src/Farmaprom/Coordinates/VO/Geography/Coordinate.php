@@ -43,4 +43,31 @@ final class Coordinate
     {
         return $this->longitude;
     }
+
+    /**
+     * @param Coordinate $coordinate
+     * @param array      $distanceUnit
+     *
+     * @return float
+     */
+    public function distanceFrom(Coordinate $coordinate, array $distanceUnit = null)
+    {
+        if (is_null($distanceUnit)) {
+            $distanceUnit = DistanceUnit::KM;
+        }
+
+        $theta = $this->getLongitude()->toNative() - $coordinate->getLongitude()->toNative();
+
+        $dist = sin(deg2rad($this->getLatitude()->toNative()))
+            * sin(deg2rad($coordinate->getLatitude()->toNative()))
+            + cos(deg2rad($this->getLatitude()->toNative()))
+            * cos(deg2rad($coordinate->getLatitude()->toNative()))
+            * cos(deg2rad($theta));
+
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $unit = $dist * 60 * $distanceUnit;
+
+        return round($unit, 1);
+    }
 }

@@ -7,7 +7,6 @@ use Farmaprom\Coordinates\CacheProvider;
 use Farmaprom\Coordinates\ContentProvider;
 use Farmaprom\Coordinates\Coordinates;
 use Farmaprom\Coordinates\Coordinates\GoogleMapCoordinates;
-use Farmaprom\Coordinates\Coordinates\OpenStreetMapCoordinates;
 use Farmaprom\Coordinates\Factory;
 use Farmaprom\Coordinates\VO\Geography\Address;
 use Farmaprom\Coordinates\VO\String\String;
@@ -63,9 +62,6 @@ final class CoordinatesFactory implements Factory
             case Coordinates::GOOGLE_MAP:
                 $urlBuilder = new GoogleMapUrlBuilder($this->url);
                 return new GoogleMapCoordinates($this->address, $this->cache, $this->contentProvider, $urlBuilder);
-                break;
-            case Coordinates::OPEN_STREET_MAP:
-                return new OpenStreetMapCoordinates($this->address, $this->cache);
                 break;
             default:
                 return null;

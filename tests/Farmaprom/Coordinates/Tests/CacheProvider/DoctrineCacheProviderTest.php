@@ -13,12 +13,10 @@ class DoctrineCacheProviderTest extends \PHPUnit_Framework_TestCase
 {
     public function testFetchWhenStringExistsInCache()
     {
-        $arrayCache = new ArrayCache();
-        $arrayCache->save("test", "string_test");
+        $cache = new DoctrineCacheProvider(new ArrayCache());
+        $cache->save("name", "Dawid Sajdak");
 
-        $cache = new DoctrineCacheProvider($arrayCache);
-
-        $this->assertSame("string_test", $cache->fetch("test"));
+        $this->assertSame("Dawid Sajdak", $cache->fetch("name"));
     }
 
     public function testFetchWhenStringNotExistsInCache()
