@@ -52,7 +52,7 @@ final class Coordinate
      */
     public function distanceFrom(Coordinate $coordinate, array $distanceUnit = null)
     {
-        if (is_null($distanceUnit)) {
+        if ($distanceUnit === null) {
             $distanceUnit = DistanceUnit::KM;
         }
 

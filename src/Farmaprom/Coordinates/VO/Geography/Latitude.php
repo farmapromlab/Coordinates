@@ -10,11 +10,5 @@ use Farmaprom\Coordinates\VO\Number\Real;
  */
 final class Latitude extends Real
 {
-    /**
-     * @param float $value
-     */
-    public function __construct($value)
-    {
-        parent::__construct($value);
-    }
+
 }

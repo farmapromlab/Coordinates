@@ -10,11 +10,5 @@ use Farmaprom\Coordinates\Vo\Number\Real;
  */
 final class Longitude extends Real
 {
-    /**
-     * @param float $value
-     */
-    public function __construct($value)
-    {
-        parent::__construct($value);
-    }
+
 }
