@@ -1,0 +1,14 @@
+build_settings:
+  verbose: false
+  ignore:
+    - "vendor"
+    - "tests"
+
+setup:
+  composer:
+    action: "install"
+    prefer_dist: false
+
+test:
+  php_unit:
+    path: "tests/"
